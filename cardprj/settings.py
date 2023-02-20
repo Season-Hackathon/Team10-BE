@@ -11,21 +11,34 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+import os
+import json
+import sys
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+ROOT_DIR = os.path.dirname(BASE_DIR)
+
+# secrets.json 경로 ==> BASE_DIRS 의 경로는 현재 생성해준 프로젝트의 경로를 가리킨다.
+
+SECRET_BASE_FILE = os.path.join(BASE_DIR, 'secrets.json')
+
+#secret.json 읽기
+secrets = json.loads(open(SECRET_BASE_FILE).read())
+for key, value in secrets.items():
+    setattr(sys.modules[__name__], key, value)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1+%t5355a%m4)am#rw_6s=a@4ic$^2!+#7me2$30kyq0#io%g&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +50,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #app
+    'accounts',
+    #django rest_framework
+    'rest_framework',
+    #jwt
+    'rest_framework_jwt',
+    #CORS
+    'corsheaders',
+
+
+    
 ]
 
 MIDDLEWARE = [
@@ -103,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-KR'
 
 TIME_ZONE = 'UTC'
 
@@ -121,3 +145,40 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    # 인증된 유저만 헤더에 access token 을 포함하여 유효한 유저만이 접근이 가능해지는 것을 디폴트로. permission_classes 변수 설정할 필요가 없음.
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # 인증된 회원만 엑세스 허용
+        'rest_framework.permissions.AllowAny',         # 모든 회원 액세스 허용
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication', #api 실행시 인증할 클래스 정의
+
+    ),
+}
+
+#JWT 환경 설정
+REST_USE_JWT = True
+
+from datetime import timedelta
+
+# 추가 설정 부분
+
+SIMPLE_JWT = {
+   
+   # 여기는 기본 세팅값
+   
+   'JWT_SECRET_KEY': SECRET_KEY,   # JWT 에 서명하는데 사용되는 시크릿키. 장고의 시크릿키가 디폴트.
+   'JWT_ALGORITHM': 'HS256',       # PyJWT 에서 암호화 서명에 지원되는 알고리즘으로 마찬가지로 이것 또한 기본값.
+   'JWT_VERIFY_EXPIRATION' : True, # 토큰 만료 시간 확인. 기본값 True.
+    
+   # 새로 커스텀한 옵션들
+   
+   'JWT_ALLOW_REFRESH': True,      # 토큰 새로고침 기능 활성화. 기본값 False.
+   'JWT_EXPIRATION_DELTA': timedelta(minutes=30),     # datetime.timedelta 의 만료 시간. 기본값 seconds=300. 
+   'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=3), # Refresh Token의 새로 고침 시간. 기본값 days=7
+   'JWT_RESPONSE_PAYLOAD_HANDLER': 'accounts.custom_responses.my_jwt_response_handler'  #로그인 또는 새로 고침 후 반환되는 응답 데이터를 제어. 기본값은 {'token' : token } 인데 이건 나중에 우리가 따로 적어줄것임.
+}
+
+
