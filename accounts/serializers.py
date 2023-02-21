@@ -1,41 +1,21 @@
 from rest_framework import serializers
-from rest_framework_jwt.settings import api_settings
-from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Profile
 from django.contrib.auth.models import User
-from django.utils.translation import gettext as _
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username','phonenum','id')
-
-class UserSerializerWithToken(serializers.ModelSerializer):
-    token = serializers.SerializerMethodField()
-    password = serializers.CharField(write_only=True)
-
-    def get_token(self, obj):
-        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
-        payload = jwt_payload_handler(obj)
-        token = jwt_encode_handler(payload)
-        return token
-
-    def create(self, validated_data):
-        password = validated_data.pop('password',None)
-        instance = self.Meta.model(**validated_data)
-        if password is not None:
-            instance.set_password(password)
-        instance.save()
-        return instance
-
-
-    class Meta:
-        model = User
-        fields = ('token','username','password','phonenum')
-
-class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
-        fields = ('id','user_pk','phonenum','username','user')
+        fields = [
+            "username",
+            "password",
+            "email",
+            "first_name",
+        ]
+    def create(self,validated_data):
+        user = User.objects.create(
+            username=validated_data["username"],
+            email=validated_data["email"],
+            first_name=validated_data["first_name"],
+            )
+        user.set_password(validated_data["password"])
+        user.save()
+        return user
