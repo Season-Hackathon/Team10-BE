@@ -25,7 +25,9 @@ def user_login(request):
     print(request.data)
     username = request.data.get("username")
     password = request.data.get("password")
-    user = authenticate(username=username, password=password,name=name,phonenum=phonenum)
+    first_naem=request.data.get("first_name")
+    email=request.data.get("email")
+    user = authenticate(username=username, password=password, first_naem=first_naem)
     if user is not None and user.is_active:
         expired_at = (timezone.now()+timedelta(days=14)).strftime(
             "%Y-%m-%d %H:%M:%S"
@@ -40,4 +42,3 @@ def user_login(request):
 @permission_classes([IsAuthenticated])
 def test(request):
     return Response(request.user.id)
-
