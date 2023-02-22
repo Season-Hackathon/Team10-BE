@@ -10,8 +10,9 @@ import jwt
 from django.utils import timezone
 from datetime import timedelta
 from django.conf import settings
-from rest_framework import status
+from rest_framework import status, generics
 from .models import *
+from rest_framework.filters import SearchFilter
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -50,14 +51,25 @@ class UserAPIView(APIView):
     # http://127.0.0.1:8000/accounts/users/
     # 가입한 전체 유저 조회 
     def get(self, request):
-        users = User.objects.all() # 일단 모든 정보 다 불러옴
-        serializer = UserSerializer(users, many=True)
+        users = CustomUser.objects.all() # 일단 모든 정보 다 불러옴
+        serializer = CustomUserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserDetailAPIView(APIView):
     # http://127.0.0.1:8000/accounts/users/{pk}/
     # 가입한 유저 세부 조회 
     def get(self, request, pk):
-        user = get_object_or_404(User, id=pk)
-        serializer = UserSerializer(user)
+        user = get_object_or_404(CustomUser, id=pk)
+        serializer = CustomUserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class UserViewSet(generics.ListAPIView):
+    # http://127.0.0.1:8000/accounts/search?username={keyword}
+    # 가입한 전체 유저 중에 keyword를 포함한 username을 가진 유저 조회
+    serializer_class = CustomUserSerializer
+    def get_queryset(self):
+        queryset = CustomUser.objects.all()
+        username = self.request.query_params.get('username', None)
+        if username is not None:
+            queryset = queryset.filter(username__contains=username)
+        return queryset
