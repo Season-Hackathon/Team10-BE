@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'rest_framework_jwt',
     #CORS
     'corsheaders',
-
+    'phonenumber_field',
 
     
 ]
@@ -179,3 +179,5 @@ SIMPLE_JWT = {
 }
 
 
+AUTH_USER_MODEL = 'accounts.CustomUser' 
+PHONENUMBER_DEFAULT_REGION = "KR"
