@@ -6,7 +6,7 @@ from accounts.models import CustomUser
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = ['tagname','tagcontent']
 
 class CardSerializer(serializers.ModelSerializer):
     tags = serializers.SerializerMethodField()
@@ -15,8 +15,9 @@ class CardSerializer(serializers.ModelSerializer):
         model = Card
         fields = '__all__'
     
-    def get_tag(self, instance):
-        # recursive
-        response = super().get_tag(instance)
-        response['tag'] = TagSerializer(instance.child).data
-        return response
+    def create_tag(self, validated_data):
+        tags_data = validated_data.pop('tags')
+        card = Card.objects.create(**validated_data)
+        for tag_data in tags_data:
+            Tag.objects.create(card=card, **tag_data)
+        return card
