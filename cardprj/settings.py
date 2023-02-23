@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #app
     'accounts',
+    'card',
     #django rest_framework
     'rest_framework',
     #jwt
