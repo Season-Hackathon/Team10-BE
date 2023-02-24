@@ -103,7 +103,6 @@ def get_env_variable(var_name):
   except KeyError:
     error_msg = 'Set the {} environment variable'.format(var_name)
     raise ImproperlyConfigured(error_msg)
-  
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
