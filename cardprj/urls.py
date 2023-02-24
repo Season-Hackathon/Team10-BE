@@ -21,9 +21,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token, refresh_jwt_token
 
+from django.views.static import serve
+from django.urls import re_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/",include('accounts.urls')),
-    path("card/",include('card.urls'))
+    path("card/",include('card.urls')),
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
 ] 
