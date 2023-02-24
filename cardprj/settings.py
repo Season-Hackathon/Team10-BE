@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 ROOT_DIR = os.path.dirname(BASE_DIR)
 
 # secrets.json 경로 ==> BASE_DIRS 의 경로는 현재 생성해준 프로젝트의 경로를 가리킨다.
-
+'''
 SECRET_FILE= os.path.join(BASE_DIR, 'secrets.json')
 
 #secret.json 읽기
@@ -40,6 +40,7 @@ def get_secret(setting):
 
 
 SECRET_KEY = get_secret("SECRET_KEY")
+'''
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
