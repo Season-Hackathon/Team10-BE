@@ -15,6 +15,42 @@ class CardSerializer(serializers.ModelSerializer):
         model = Card
         fields = '__all__'
     
+    def get_tag(self, instance):
+        # recursive
+        response = super().get_tag(instance)
+        response['tag'] = TagSerializer(instance.child).data
+        return response
+
+class UsernameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username']
+
+class Card2Serializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source = 'user.username')
+    friends = UsernameSerializer(many=True)
+    class Meta:
+        model = Card
+        fields = ['id', 'username', 'classname', 'friends']
+        # fields = '__all__'
+        # fields = ['friends']
+
+
+class FriendSerializer(serializers.ModelSerializer):
+    # username = serializers.ReadOnlyField(source = 'user.username')
+    # friends = UsernameSerializer(many=True)
+    # friends_ = serializers.ReadOnlyField(source = 'friends')
+    class Meta:
+        model = Card
+        fields = ['friends']
+        
+class Friend2Serializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source = 'user.username')
+    class Meta:
+        model = Card
+        fields = ['username']
+
+
     def create_tag(self, validated_data):
         tags_data = validated_data.pop('tags')
         card = Card.objects.create(**validated_data)
