@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import *
 from accounts.models import CustomUser
-
+from django.utils.translation import gettext_lazy as _
     
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
