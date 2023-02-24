@@ -6,7 +6,7 @@ from accounts.models import CustomUser
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = ['tagname','tagcontent']
 
 class CardSerializer(serializers.ModelSerializer):
     tags = serializers.SerializerMethodField()
@@ -51,3 +51,9 @@ class Friend2Serializer(serializers.ModelSerializer):
         fields = ['username']
 
 
+    def create_tag(self, validated_data):
+        tags_data = validated_data.pop('tags')
+        card = Card.objects.create(**validated_data)
+        for tag_data in tags_data:
+            Tag.objects.create(card=card, **tag_data)
+        return card

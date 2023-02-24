@@ -17,3 +17,5 @@ class Card(models.Model):
         return f'{self.user.username}의 카드'
 class Tag(models.Model):
     card = models.ForeignKey(Card, related_name='tags',on_delete=models.CASCADE)
+    tagname = models.CharField(max_length=20,blank=False,default='')
+    tagcontent = models.CharField(max_length=50,blank=False,default='')
