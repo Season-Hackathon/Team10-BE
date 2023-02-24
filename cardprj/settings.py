@@ -24,10 +24,10 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 
 # secrets.json 경로 ==> BASE_DIRS 의 경로는 현재 생성해준 프로젝트의 경로를 가리킨다.
 
-SECRET_BASE_FILE = os.path.join(BASE_DIR, 'secrets.json')
+SECRET_PATH= os.path.join(BASE_DIR, 'secrets.json')
 
 #secret.json 읽기
-secrets = json.loads(open(SECRET_BASE_FILE).read())
+secrets = json.loads(open(SECRET_PATH).read())
 for key, value in secrets.items():
     setattr(sys.modules[__name__], key, value)
 
