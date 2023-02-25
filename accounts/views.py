@@ -29,9 +29,9 @@ def user_login(request):
     print(request.data)
     username = request.data.get("username")
     password = request.data.get("password")
-    first_naem=request.data.get("first_name")
-    email=request.data.get("email")
-    user = authenticate(username=username, password=password, first_naem=first_naem)
+    # first_naem=request.data.get("first_name")
+    # email=request.data.get("email")
+    user = authenticate(username=username, password=password)
     if user is not None and user.is_active:
         expired_at = (timezone.now()+timedelta(days=14)).strftime(
             "%Y-%m-%d %H:%M:%S"
