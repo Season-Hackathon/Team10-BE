@@ -10,5 +10,6 @@ urlpatterns = [
     path('', CardAPIView.as_view()),
     path('<int:user_id>', CardDetailAPIView.as_view()),
     path('<int:user_id>/friends/', FriendAPIView.as_view()),
-    # path('<int:user_id>/search', SearchViewSet.as_view())
+    path('<int:user_id>/search', SearchViewSet.as_view()),
+    path('<int:user_id>/add', FriendCreateView.as_view())
 ]

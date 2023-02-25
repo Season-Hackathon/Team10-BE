@@ -17,7 +17,7 @@ from rest_framework.filters import SearchFilter
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def user_regist(request):
-    serializer = UserSerializer(data = request.data)
+    serializer = CustomUserSerializer(data = request.data)
     if serializer.is_valid(raise_exception=True):
         serializer.save()
         return Response(serializer.data)
