@@ -31,8 +31,8 @@ class Card2Serializer(serializers.ModelSerializer):
     friends = UsernameSerializer(many=True)
     class Meta:
         model = Card
-        fields = ['id', 'username', 'classname', 'friends']
-        # fields = '__all__'
+        # fields = ['id', 'username', 'classname', 'friends']
+        fields = '__all__'
         # fields = ['friends']
 
 
@@ -42,7 +42,7 @@ class FriendSerializer(serializers.ModelSerializer):
     # friends_ = serializers.ReadOnlyField(source = 'friends')
     class Meta:
         model = Card
-        fields = ['friends']
+        fields = '__all__'
         
 class Friend2Serializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source = 'user.username')

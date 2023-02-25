@@ -20,13 +20,13 @@ class AccountAdmin(UserAdmin):
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('username', 'phone_num')}),
+        ('Personal info', {'fields': ('username', 'phone_num', 'friends')}),
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'username', 'phone_num', 'password')}
+            'fields': ('email', 'username', 'phone_num','password')}
          ),
     )
     search_fields = ('email','username')

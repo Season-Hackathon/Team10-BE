@@ -7,11 +7,10 @@ from accounts.models import CustomUser
 
 class Card(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.OneToOneField(CustomUser, null=True, blank=False, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, null=True, blank=False, on_delete=models.CASCADE, related_name='user_card')
     classname = models.CharField(max_length=10,blank=False,null=True)
     userImage = models.ImageField(blank=True, null=True, upload_to="media/ProfileImage")
 
-    friends = models.ManyToManyField(CustomUser, blank=True, related_name='friends')
 
     def __str__(self):
         return f'{self.user.username}의 카드'

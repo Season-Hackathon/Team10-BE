@@ -6,27 +6,29 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 class UserManager(BaseUserManager):
-    def create_user(self, email, username, phone_num, password=None):
+    def create_user(self, email, username, phone_num, friends=[], password=None):
         if not email:
             raise ValueError('Users must have an email address')
 
         user = self.model(
             email=self.normalize_email(email),
             username = username,
-            phone_num = phone_num
+            phone_num = phone_num,
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, username, phone_num, password):
+    def create_superuser(self, email, username, phone_num, friends=[], password=None):
         user = self.create_user(
             email,
             password = password,
             username = username,
-            phone_num = phone_num
+            phone_num = phone_num,
         )
+        
+        user.friends.set(*friends)
         # user.is_superuser = True
         user.is_admin = True
         # user.is_staff = True
@@ -42,10 +44,12 @@ class CustomUser(AbstractBaseUser):
     # is_superuser = models.BooleanField(default=False)
     # is_staff = models.BooleanField(default=False)
 
+    friends = models.ManyToManyField('CustomUser', blank=True)
+
     objects = UserManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'phone_num']
+    REQUIRED_FIELDS = ['email', 'phone_num', 'friends']
 
     def __str__(self):
         return self.username
