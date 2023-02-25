@@ -85,23 +85,23 @@ class SearchViewSet(generics.ListAPIView):
 
 class FriendCreateView(APIView):
     def post(self, request, user_id):
-        
+        if request.user.is_authenticated:
         # user = 나 
-        user = get_object_or_404(CustomUser, id=request.data['id'])
-        try:
-            # 추가할 친구 = 나? => 오류
-            if user_id == request.user.id:
-                raise IntegrityError
+            user = get_object_or_404(CustomUser, id = request.user.id)
+            try:
+                # 추가할 친구 = 나? => 오류
+                if user_id == request.user.id:
+                    raise IntegrityError
+                
+                user.friends.add(request.data)
+                serializers = AddUserSerializer(data=request.data) 
+                if serializers.is_valid():           
+                    serializers.save()
+                return Response(serializers.data, status=status.HTTP_200_OK)    
             
-            user.friends.add(request.data)
-            serializers = AddUserSerializer(data=request.data) 
-            if serializers.is_valid():           
-                serializers.save()
-            return Response(serializers.data, status=status.HTTP_200_OK)    
-        
-        except IntegrityError:
-            return self.response(message = '잘못된 요청입니다.', status = 400)
-        
+            except IntegrityError:
+                return self.response(message = '잘못된 요청입니다.', status = 400)
+        return Response(status = 400)    
         
         
 
