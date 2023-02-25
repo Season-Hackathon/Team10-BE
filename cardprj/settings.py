@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     #CORS
     'corsheaders',
     'phonenumber_field',
+    
 
     
 ]
@@ -160,8 +161,12 @@ REST_FRAMEWORK = {
     # 인증된 유저만 헤더에 access token 을 포함하여 유효한 유저만이 접근이 가능해지는 것을 디폴트로. permission_classes 변수 설정할 필요가 없음.
     'DEFAULT_PERMISSION_CLASSES': (
     ),
+
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'accounts.authentications.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+        
     ),
 }
 
